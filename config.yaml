@@ -1,7 +1,7 @@
 baseurl: /
 languageCode: en-us
-title: A Hugo website
-theme: hugo-lithium
+title: Carlos F. Alcalá
+theme: beautifulhugo
 googleAnalytics: ''
 disqusShortname: ''
 ignoreFiles:
