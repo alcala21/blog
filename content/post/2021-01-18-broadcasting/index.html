@@ -1,0 +1,122 @@
+---
+title: A Visual Guide To Broadcasting In Numpy
+author: Carlos F. Alcalá
+date: '2021-01-18'
+slug: broadcasting
+categories: []
+tags: [python, numpy, broadcasting]
+mathjax: yes
+toc: no
+highlight: kate
+
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+<div id="TOC">
+
+</div>
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>I recently took the excellent course on <a href="https://www.edx.org/course/machine-learning-with-python-from-linear-models-to">Machine Learning with Python from MIT</a>. In one of the forums for a project on mixture models, somebody asked about how to perform calculations of the expectation maximization (EM) algorithm without using for loops. I wrote an answer about how <a href="https://numpy.org/doc/stable/user/basics.broadcasting.html">broadcasting</a> can be implemented in numpy to perform vectorized operations to simplify and speed up execution of the code. Because of the relevance of the topic and the response from my fellow classmates, I have decided to extend the explanation and share it in this post. My goal is to show in a visual way of how broadcasting works, hoping it will help anybody struggling to make sense of the concept.</p>
+</div>
+<div id="broadcasting" class="section level1">
+<h1>Broadcasting</h1>
+<p>Broadcasting can help us avoid using for-loops in arithmetic operations with vectors, matrices and multidimentional arrays. I initially learned about it in this <a href="https://realpython.com/numpy-array-programming/">great article</a> on array programming with numpy; but, it took me some time to figure out how to know which dimensions to expand in a matrix in order to make broadcasting work. I found it difficult to visualize what a matrix would look like after an operation reduced one of its dimensions. This all became clear once I understood how numpy orders the dimensions of a matrix; after that it just became a matter of reshaping matrices and keeping track of their dimensions during broadcasting operations. Before I dive into those concepts, I’ll show you a few examples to help us build a simple understanding of broadcasting.</p>
+<div id="vector-scalar-example" class="section level2">
+<h2>Vector-Scalar Example</h2>
+<p>The simplest example I can think of is the subtraction of a scalar from a vector. This operation is commonly used to center, or shift, a vector with respect to a given value. Let’s say we have the vector <span class="math inline">\(x\)</span> of a given dimension <span class="math inline">\(d\)</span> and want to subtract the value <span class="math inline">\(1\)</span> from each element. Assuming we have the values of <span class="math inline">\(x\)</span> in the numpy array <code>x</code>, we can use a for-loop and do:</p>
+<pre class="python"><code>y = x.copy()
+for i in range(len(x)):
+  y[i] = x[i] - 1</code></pre>
+<p>or, we can do:</p>
+<pre class="python"><code>y = x - 1</code></pre>
+<p>The last piece of code is shorter and more intuitive since that’s how we also write that operation in paper; but how does numpy know how to subtract <code>1</code> from each element in <code>x</code>? That’s where broadcasting comes in; the image below shows how it happens in this case,</p>
+<p><img src="/images/simple-broadcasting.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>The value <span class="math inline">\(1\)</span> was repeated, or broadcasted, along the longest dimension of <span class="math inline">\(x\)</span> and then subtracted from each element of <span class="math inline">\(x\)</span>. Broadcasting happened this way because of the shapes, or dimensions, of <span class="math inline">\(1\)</span> and <span class="math inline">\(x\)</span>; had their shapes been different, we would’ve had to manipulate these in order to perform the subtraction. In fact, the trick to understand broadcasting lays upon understanding the shapes of the terms we’re dealing with, and how to modify them.</p>
+</div>
+<div id="matrix-vector-example" class="section level2">
+<h2>Matrix-Vector Example</h2>
+<p>Let’s now increase the dimension of the objects and subtract a vector <span class="math inline">\(\mu\)</span> from a matrix <span class="math inline">\(X\)</span> and call the difference <span class="math inline">\(dX\)</span>; this operation is equivalent to centering the data in a matrix around a point. Each row of <span class="math inline">\(X\)</span> is composed of a d-dimensional vector <span class="math inline">\(x_i\)</span>, and the centering vector <span class="math inline">\(\mu\)</span> shares the same dimension of <span class="math inline">\(x_i\)</span>. In matrix notation, the data set is</p>
+<p><span class="math display">\[
+  X = \left[\begin{array}{c}x_1^T\\ x_2^T \\ \vdots \\ x_n^T  \end{array}\right]
+\]</span></p>
+<p>and it’s centered as</p>
+<p><span class="math display">\[
+  dX = X - 1_{n} \mu^T = \left[\begin{array}{c}x_1^T - \mu^T\\ x_2^T - \mu^T \\ \vdots \\ x_n^T - \mu^T \end{array} \right]
+\]</span></p>
+<p>The term <span class="math inline">\(1_{n}\)</span> is a vector with <span class="math inline">\(n\)</span> values of <span class="math inline">\(1\)</span>. Now, assuming that we have numpy arrays with the matrix <code>X</code> and vector <code>mu</code>, we obtain the centered matrix <code>dX</code> with the line</p>
+<pre class="python"><code>dX = X - mu</code></pre>
+<p>The way the code is written is very similar to how we wrote the operation in the equation above; this similarity is one of the beautiful and powerful features of numpy broadcasting. The above computation happens assuming that the shape of <code>X</code> is <span class="math inline">\((n, d)\)</span>, and <code>mu</code> is a 1D array of shape <span class="math inline">\((d, )\)</span>, or a 2D array of shape <span class="math inline">\((1, d)\)</span>. Why can we use a 1D or 2D array for <code>mu</code>? This is because in numpy 1D arrays are considered row vectors when using them in operations with higher dimensional arrays. Furthermore, the rightmost value of the shape of an array corresponds to the number of columns of the array. In this case the matrix <span class="math inline">\(X\)</span> and vector <span class="math inline">\(\mu\)</span> match the number of elements <span class="math inline">\(d\)</span> in the column dimension. Broadcasting repeats the vector <span class="math inline">\(\mu\)</span> <span class="math inline">\(n\)</span> times along the row-dimension. Here’s a sketch of that:</p>
+<p><img src="/images/matrix-vector.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="matrix-matrix-example" class="section level2">
+<h2>Matrix-Matrix Example</h2>
+<p>Now, let’s say you want to center the matrix <span class="math inline">\(X\)</span> around <span class="math inline">\(m\)</span> different vectors <span class="math inline">\(\mu_j\)</span> contained in a matrix <span class="math inline">\(M\)</span> that looks like this</p>
+<p><span class="math display">\[
+M = \left[\begin{array}{c}\mu_1^T\\ \mu_2^T \\ \vdots \\ \mu_m^T \end{array} \right]
+\]</span></p>
+<p>This type of centering comes up in algorithms like K-Means clustering or Expectation-Maximization. In this case we can use broadcasting by arranging <span class="math inline">\(M\)</span> in such a way that <span class="math inline">\(X\)</span> is repeated along a dimension of <span class="math inline">\(M\)</span> from which <span class="math inline">\(\mu_j\)</span> is subtracted. We can visualize in the following sketch,</p>
+<p><img src="/images/matrix-matrix.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>Now, how do we arrange the shape of <span class="math inline">\(M\)</span> in the form shown above? That’s where array shapes and reshaping come into play.</p>
+</div>
+<div id="array-shapes" class="section level2">
+<h2>Array Shapes</h2>
+<p>I already mentioned that the first number on the right of an array shape corresponds to the number of columns in the array; now, the second number from the right corresponds to the rows of the array, and the third number corresponds to its number of layers. If we consider <span class="math inline">\(M\)</span> to be in a 3-dimensional space, counting from the right, the first number corresponds to the x-axis, the second to the y-axis and the third to the z-axis. Knowing this, we can add extra dimensions to <span class="math inline">\(M\)</span> to shape it in a way that’s useful for us. If its shape is <span class="math inline">\((m, d)\)</span>, it means that we have <span class="math inline">\(m\)</span> rows and <span class="math inline">\(d\)</span> columns, but if we add another dimension and make the shape <span class="math inline">\((m, 1, d)\)</span>, we now have <span class="math inline">\(m\)</span> layers, <span class="math inline">\(1\)</span> row and <span class="math inline">\(d\)</span> columns; similarly, a shape of <span class="math inline">\((m, d, 1)\)</span> provides us with <span class="math inline">\(m\)</span> layers, <span class="math inline">\(d\)</span> rows and <span class="math inline">\(1\)</span> column. These shape transformations look like this:</p>
+<p><img src="/images/reshaping.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>You increase the dimension of an array by slicing with <code>np.newaxis</code> or <code>None</code> in the position of the dimension you want to add. Assuming that <code>M</code> is a numpy array with shape <span class="math inline">\((m, d)\)</span>, you obtain the shapes</p>
+<ul>
+<li><span class="math inline">\((1, m, d)\)</span> with: <code>M[None, :, :]</code></li>
+<li><span class="math inline">\((m, 1, d)\)</span> with: <code>M[:, None, :]</code></li>
+<li><span class="math inline">\((m, d, 1)\)</span> with: <code>M[:, :, None]</code></li>
+</ul>
+</div>
+<div id="broadcasting-in-multiple-dimensions" class="section level2">
+<h2>Broadcasting in multiple dimensions</h2>
+<p>From the figure above, the second item in the previous list corresponds to the reshaped version of <code>M</code> we need. Thus, the broadcasted version of <span class="math inline">\(X - \mu_j\)</span> would be computed as</p>
+<pre><code>dX = X - M[:, None, :]</code></pre>
+<p>In this operation, numpy expands the shape of <code>X</code> to <span class="math inline">\((1, n, d)\)</span>, and broadcasts its values <span class="math inline">\(m\)</span> times along the first dimension producing an <span class="math inline">\((m, n, d)\)</span> array; then it repeats <span class="math inline">\(n\)</span> times the reshaped version of <code>M</code> (with shape <span class="math inline">\((m, 1, d)\)</span>) along its second dimension, producing another <span class="math inline">\((m, n, d)\)</span> array; finally, it performs element-wise subtraction to create the array <code>dX</code> with shape <span class="math inline">\((m, n, d)\)</span>.</p>
+</div>
+</div>
+<div id="k-means-clustering-example" class="section level1">
+<h1>K-Means Clustering Example</h1>
+<p>Let’s implement the <a href="https://en.wikipedia.org/wiki/K-means_clustering">k-means clustering algorithm</a> using broadcasting.
+K-means clustering partitions a data set into <span class="math inline">\(k\)</span> sets and assigns each sample of the set to the cluster with the nearest center, or mean value.</p>
+<p>The first step in the algorithm is to decide how many clusters we’ll use to gather the data; after that, we initialize the algorithm with cluster centers randomly selected from points of the data set. At each iteration of the algorithm we calculate the distance of each point to the centers and assign the points to the cluster with the nearest center. We calculate new centers for these clusters and replace the old centers. We stop the iterations after the norm of difference between the new and old cluster centers fall below a given threshold.</p>
+<p>An implementation of the K-means clustering algorithm is shown below. The first 4 lines of code are used to set the seed of the random number generator and build the data set; we will generate data around 3 points, and will select the number of clusters <span class="math inline">\(k\)</span> to be 3, although we could use any value for <span class="math inline">\(k\)</span>.</p>
+<p>The only for-loop in the algorithm is used to assign the points to their nearest clusters and update the center of these clusters. The rest of the code is just array operations to center the data, calculate the distance of the data points to the cluster centers, and find the nearest center to each point. I wrote the shape resulting after each operation at the end of each line in order to keep track of the shapes, and keep a mental image of how the arrays are changing.</p>
+<pre class="python"><code>import numpy as np
+
+# Create data set of 15 random samples around (-3, 3), (0, 0), (3, 3)
+np.random.seed(1)
+points = np.array([[-3, -3], [0, 0], [3, 3]])
+X = points[:, None, :] + np.reshape(0.7071*np.random.randn(100*3*2), (3, 100, 2))
+X = np.reshape(X, (300, 2)) # Shape: (300, 2)
+
+# Select random initial set of 3 centers from the original data set
+k = 3 # Number of clusters
+M = X[np.random.choice(X.shape[0], k, replace=False), :] # Shape(3, 2)
+init_M = M.copy() # Save initial centers
+
+# K-Mean Clustering Algorithm
+center_difference = 1
+while center_difference &gt; 0.001:
+  dX = X  - M[:, None, :] # Center matrix X around vectors in M. Shape: (3, 300, 2)
+  distance = np.linalg.norm(dX, axis=2)  # Calculate distance between points and centers. Shape: (3, 300)
+  id_vals = np.argmin(distance, axis=0) # Get index value of nearest centers. Shape: (300, )
+  old_M = M.copy()
+
+  for i in range(M.shape[0]):
+    M[i, :] = np.mean(X[id_vals == i, :], axis=0) # Assign points to clusters and calculate new centers
+
+  center_difference = np.linalg.norm(M - old_M) # Difference between the new and previous centers</code></pre>
+<p>The figure below shows the data set used to train the algorithm, as well as the points used as initial centers of the clusters. We can clearly see there are 3 clusters roughly centered around the points <span class="math inline">\((-3, -3)\)</span>, <span class="math inline">\((0, 0)\)</span> and <span class="math inline">\((3, 3)\)</span>.</p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/initial-plot-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>In the following plot we see the clustering results after the algorithm has converged. The resulting centers are very closed to the values we visually estimated.</p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/final-plot-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>Broadcasting is a powerful tool to simplify and expedite array computations in Python. I hope the explanation I presented here helps you understand how to reshape arrays to perform broadcasting operations. My final advice is that you try to visualize what’s going on whenever possible, and keep track of the shapes you’re obtaining; doing that will make broadcasting much easier for you. Happy coding! Thank you for reading.</p>
+</div>
