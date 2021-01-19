@@ -203,5 +203,5 @@ q
 
 # Conclusion
 
-Broadcasting is a powerful tool to simplify and expedite array computations in Python. I hope the explanation I presented here helps you understand how to reshape arrays to perform broadcasting operations. My final advice is that you try to visualize what's going on whenever possible, and keep track of the shapes you're obtaining; doing that will make broadcasting much easier for you. Happy coding! Thank you for reading.
+Broadcasting is a powerful tool to simplify and expedite array computations in Python. I hope the explanation I presented here helps you understand how to reshape arrays to perform broadcasting operations. My final advice is that you try to visualize what's going on whenever possible, and keep track of the shapes you're obtaining; doing that will make broadcasting much easier for you. Happy coding! Thank you for reading and be awesome!
 
