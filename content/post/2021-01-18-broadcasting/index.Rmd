@@ -169,7 +169,7 @@ while center_difference > 0.001:
 
 The figure below shows the data set used to train the algorithm, as well as the points used as initial centers of the clusters. We can clearly see there are 3 clusters roughly centered around the points $(-3, -3)$, $(0, 0)$ and $(3, 3)$.
 
-```{r initial-plot, echo=FALSE, device="Cairo_png", dpi=300}
+```{r initial-plot, echo=FALSE, device="Cairo_png"}
 df <- as.data.frame(py$X)
 df$id <- as.factor(py$id_vals)
 init_centers <- as.data.frame(py$init_M)
@@ -190,7 +190,7 @@ p
 In the following plot we see the clustering results after the algorithm has converged. The resulting centers are very closed to the values we visually estimated.
 
 
-```{r final-plot, echo=FALSE, device="CairoPNG", dpi=300}
+```{r final-plot, echo=FALSE, device="CairoPNG"}
 q <- df %>% ggplot(aes(x = V1, y = V2)) + geom_point(aes(color=id))
 q <- q + geom_point(data=centers, aes(x=V1, y = V2), color = 'black', size=3)
 q <- q + geom_text(data=centers, aes(label=id), hjust=0, nudge_x = 0.2, color='black')
