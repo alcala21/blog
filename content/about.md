@@ -1,6 +1,6 @@
 ---
-date: "2016-05-05T21:48:51-07:00"
+date: "2021-01-18T19:00:00-00:00"
 title: About
 ---
 
-This is a "hello world" example website for the [**blogdown**](https://github.com/rstudio/blogdown) package. The theme was forked from [@jrutheiser/hugo-lithium-theme](https://github.com/jrutheiser/hugo-lithium-theme) and modified by [Yihui Xie](https://github.com/yihui/hugo-lithium).
+Hi, I'm Carlos F. Alcalá, a Data Scientist from Tampico, México. I specialize in the development and application of Data Science and Machine Learning methods to the monitoring and automation of industrial and technological processes. I have a PhD from the University of Southern California (USC), a Master's degree from The University of Texas at Austin, and a Bachelors degree from the Instituto Tecnológico de Ciudad Madero. I have developed a unique profile due to my academic background, professional experience and continous development. I consider myself  a mix of a data scientist, controls engineer and computer engineer, with a passion for helping, learning, playing guitar, dancing, and photography.
