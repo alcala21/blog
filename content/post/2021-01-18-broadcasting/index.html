@@ -6,7 +6,9 @@ slug: broadcasting
 categories: []
 tags: [python, numpy, broadcasting]
 mathjax: yes
-toc: no
+output:
+  blogdown::html_page:
+    toc: true
 highlight: kate
 
 ---
@@ -14,12 +16,24 @@ highlight: kate
 <script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
-
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#broadcasting">Broadcasting</a>
+<ul>
+<li><a href="#vector-scalar-example">Vector-Scalar Example</a></li>
+<li><a href="#matrix-vector-example">Matrix-Vector Example</a></li>
+<li><a href="#matrix-matrix-example">Matrix-Matrix Example</a></li>
+<li><a href="#array-shapes">Array Shapes</a></li>
+<li><a href="#broadcasting-in-multiple-dimensions">Broadcasting in multiple dimensions</a></li>
+</ul></li>
+<li><a href="#k-means-clustering-example">K-Means Clustering Example</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
 </div>
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>I recently took the excellent course on <a href="https://www.edx.org/course/machine-learning-with-python-from-linear-models-to">Machine Learning with Python from MIT</a>. In one of the forums for a project on mixture models, somebody asked about how to perform calculations of the expectation maximization (EM) algorithm without using for loops. I wrote an answer about how <a href="https://numpy.org/doc/stable/user/basics.broadcasting.html">broadcasting</a> can be implemented in numpy to perform vectorized operations to simplify and speed up execution of the code. Because of the relevance of the topic and the response from my fellow classmates, I have decided to extend the explanation and share it in this post. My goal is to show in a visual way of how broadcasting works, hoping it will help anybody struggling to make sense of the concept.</p>
+<p>I recently took the excellent course on <a href="https://www.edx.org/course/machine-learning-with-python-from-linear-models-to">Machine Learning with Python from MIT</a>. In one of the forums somebody asked about how to perform calculations of the expectation maximization (EM) algorithm without for loops. I wrote an answer about how <a href="https://numpy.org/doc/stable/user/basics.broadcasting.html">broadcasting</a> can be implemented in numpy to perform vectorized operations that simplify and speed up execution of the code. Because of the relevance of the topic and response from my fellow classmates, I have decided to extend the explanation and share it in this post. First I will show how broadcasting works with arrays of different dimensions, and then I’ll use it to implement the K-means clustering algorithm. My goal is to show in a visual way how broadcasting works, hoping it will help anybody struggling with the concept.</p>
 </div>
 <div id="broadcasting" class="section level1">
 <h1>Broadcasting</h1>
