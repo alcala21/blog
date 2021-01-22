@@ -128,6 +128,17 @@ From the figure above, the second item in the previous list corresponds to the r
 
 In this operation, numpy expands the shape of `X` to $(1, n, d)$, and broadcasts its values $m$ times along the first dimension producing an $(m, n, d)$ array; then it repeats $n$ times the reshaped version of `M` (with shape $(m, 1, d)$) along its second dimension, producing another $(m, n, d)$ array; finally, it performs element-wise subtraction to create the array `dX` with shape $(m, n, d)$.
 
+If we are interested in the distance between each point $x_i$ and vector $\mu_j$ we just calculate the 2-norm of the array `dX` along its column dimension; we do this because the difference $x_i - \mu_j$ is stored in each row of `dX`, and we'd have to move across its columns in order to sum the squared values of the elements of $x_i - \mu_j$. The code that does this is:
+
+```{python, distance, eval=FALSE}
+distance = np.linalg.norm(dX, axis=2)
+```
+
+We didn't specify the 2-norm in the previous function, because this norm is a default parameter. For a different norm, we would have to include the parameter `ord`; for example, `ord=1` or `ord=inf`.
+
+Since we calculated the norm across the column dimension of `dX`, this dimension will vanish and the new array will keep the shape of the remaining dimensions, this is $(m, n)$; therefore, the array `distance` will have $m$ rows and $n$ columns. The resulting distance between the vectors $x_i$ and $\mu_j$ is stored in the ijth position of the `distance` array.
+
+
 # K-Means Clustering Example
 
 Let's implement the [k-means clustering algorithm](https://en.wikipedia.org/wiki/K-means_clustering) using broadcasting.
