@@ -71,7 +71,7 @@ for i in range(len(x)):
 <p><span class="math display">\[
 M = \left[\begin{array}{c}\mu_1^T\\ \mu_2^T \\ \vdots \\ \mu_m^T \end{array} \right]
 \]</span></p>
-<p>This type of centering comes up in algorithms like K-Means clustering or Expectation-Maximization. In this case we can use broadcasting by arranging <span class="math inline">\(M\)</span> in such a way that <span class="math inline">\(X\)</span> is repeated along a dimension of <span class="math inline">\(M\)</span> from which <span class="math inline">\(\mu_j\)</span> is subtracted. We can visualize in the following sketch,</p>
+<p>This type of centering comes up in algorithms like K-Means clustering or Expectation-Maximization. In this case we can use broadcasting by arranging <span class="math inline">\(M\)</span> in such a way that <span class="math inline">\(X\)</span> is repeated along a dimension of <span class="math inline">\(M\)</span> from which <span class="math inline">\(\mu_j\)</span> is subtracted. We can visualize this in the following sketch,</p>
 <p><img src="/images/matrix-matrix.png" width="90%" style="display: block; margin: auto;" /></p>
 <p>Now, how do we arrange the shape of <span class="math inline">\(M\)</span> in the form shown above? That’s where array shapes and reshaping come into play.</p>
 </div>
@@ -97,9 +97,9 @@ M = \left[\begin{array}{c}\mu_1^T\\ \mu_2^T \\ \vdots \\ \mu_m^T \end{array} \ri
 <h1>K-Means Clustering Example</h1>
 <p>Let’s implement the <a href="https://en.wikipedia.org/wiki/K-means_clustering">k-means clustering algorithm</a> using broadcasting.
 K-means clustering partitions a data set into <span class="math inline">\(k\)</span> sets and assigns each sample of the set to the cluster with the nearest center, or mean value.</p>
-<p>The first step in the algorithm is to decide how many clusters we’ll use to gather the data; after that, we initialize the algorithm with cluster centers randomly selected from points of the data set. At each iteration of the algorithm we calculate the distance of each point to the centers and assign the points to the cluster with the nearest center. We calculate new centers for these clusters and replace the old centers. We stop the iterations after the norm of difference between the new and old cluster centers fall below a given threshold.</p>
+<p>The first step in the algorithm is to decide how many clusters we’ll use to gather the data; after that, we initialize the algorithm with cluster centers randomly selected from points of the data set. At each iteration of the algorithm we calculate the distance of each point to the centers and assign the points to the cluster with the nearest center. We calculate new centers for these clusters and replace the old centers. We stop the iterations after the norm of the difference between the new and old cluster centers fall below a given threshold.</p>
 <p>An implementation of the K-means clustering algorithm is shown below. The first 4 lines of code are used to set the seed of the random number generator and build the data set; we will generate data around 3 points, and will select the number of clusters <span class="math inline">\(k\)</span> to be 3, although we could use any value for <span class="math inline">\(k\)</span>.</p>
-<p>The only for-loop in the algorithm is used to assign the points to their nearest clusters and update the center of these clusters. The rest of the code is just array operations to center the data, calculate the distance of the data points to the cluster centers, and find the nearest center to each point. I wrote the shape resulting after each operation at the end of each line in order to keep track of the shapes, and keep a mental image of how the arrays are changing.</p>
+<p>The only for-loop in the algorithm is used to assign the points to their nearest clusters and update the center of these clusters. The rest of the code is just array operations to center the data, calculate the distance of the data points to the cluster centers, and finding the nearest center to each point. I wrote the shape resulting after each operation at the end of each line in order to keep track of the shapes, and keep a mental image of how the arrays are changing.</p>
 <pre class="python"><code>import numpy as np
 
 # Create data set of 15 random samples around (-3, 3), (0, 0), (3, 3)
@@ -132,5 +132,5 @@ while center_difference &gt; 0.001:
 </div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>
-<p>Broadcasting is a powerful tool to simplify and expedite array computations in Python. I hope the explanation I presented here helps you understand how to reshape arrays to perform broadcasting operations. My final advice is that you try to visualize what’s going on whenever possible, and keep track of the shapes you’re obtaining; doing that will make broadcasting much easier for you. Happy coding! Thank you for reading and be awesome!</p>
+<p>Broadcasting is a powerful tool to simplify and expedite array computations in Python. I hope the explanation I presented here helps you understand how to reshape arrays to perform broadcasting operations. My final advice is that you try to visualize what’s going on whenever possible, and keep track of the shapes you’re obtaining; doing that will make broadcasting much easier for you. Happy coding and thank you for reading!</p>
 </div>

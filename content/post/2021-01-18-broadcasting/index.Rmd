@@ -97,7 +97,7 @@ Now, let's say you want to center the matrix $X$ around $m$ different vectors $\
 M = \left[\begin{array}{c}\mu_1^T\\ \mu_2^T \\ \vdots \\ \mu_m^T \end{array} \right]
 \]
 
-This type of centering comes up in algorithms like  K-Means clustering or Expectation-Maximization. In this case we can use broadcasting by arranging $M$ in such a way that $X$ is repeated along a dimension of $M$ from which $\mu_j$ is subtracted. We can visualize in the following sketch,
+This type of centering comes up in algorithms like  K-Means clustering or Expectation-Maximization. In this case we can use broadcasting by arranging $M$ in such a way that $X$ is repeated along a dimension of $M$ from which $\mu_j$ is subtracted. We can visualize this in the following sketch,
 
 ```{r fig2, echo=FALSE}
 knitr::include_graphics("/images/matrix-matrix.png", error=FALSE)
@@ -133,11 +133,11 @@ In this operation, numpy expands the shape of `X` to $(1, n, d)$, and broadcasts
 Let's implement the [k-means clustering algorithm](https://en.wikipedia.org/wiki/K-means_clustering) using broadcasting.
 K-means clustering partitions a data set into $k$ sets and assigns each sample of the set to the cluster with the nearest center, or mean value.
 
-The first step in the algorithm is to decide how many clusters we'll use to gather the data; after that, we initialize the algorithm with cluster centers randomly selected from points of the data set. At each iteration of the algorithm we calculate the distance of each point to the centers and assign the points to the cluster with the nearest center. We calculate new centers for these clusters and replace the old centers. We stop the iterations after the norm of difference between the new and old cluster centers fall below a given threshold.
+The first step in the algorithm is to decide how many clusters we'll use to gather the data; after that, we initialize the algorithm with cluster centers randomly selected from points of the data set. At each iteration of the algorithm we calculate the distance of each point to the centers and assign the points to the cluster with the nearest center. We calculate new centers for these clusters and replace the old centers. We stop the iterations after the norm of the difference between the new and old cluster centers fall below a given threshold.
 
 An implementation of the K-means clustering algorithm is shown below. The first 4 lines of code are used to set the seed of the random number generator and build the data set; we will generate data around 3 points, and will select the number of clusters $k$ to be 3, although we could use any value for $k$.
 
-The only for-loop in the algorithm is used to assign the points to their nearest clusters and update the center of these clusters. The rest of the code is just array operations to center the data, calculate the distance of the data points to the cluster centers, and find the nearest center to each point. I wrote the shape resulting after each operation at the end of each line in order to keep track of the shapes, and keep a mental image of how the arrays are changing.
+The only for-loop in the algorithm is used to assign the points to their nearest clusters and update the center of these clusters. The rest of the code is just array operations to center the data, calculate the distance of the data points to the cluster centers, and finding the nearest center to each point. I wrote the shape resulting after each operation at the end of each line in order to keep track of the shapes, and keep a mental image of how the arrays are changing.
 
 ```{python, kmc}
 import numpy as np
@@ -205,5 +205,5 @@ q
 
 # Conclusion
 
-Broadcasting is a powerful tool to simplify and expedite array computations in Python. I hope the explanation I presented here helps you understand how to reshape arrays to perform broadcasting operations. My final advice is that you try to visualize what's going on whenever possible, and keep track of the shapes you're obtaining; doing that will make broadcasting much easier for you. Happy coding! Thank you for reading and be awesome!
+Broadcasting is a powerful tool to simplify and expedite array computations in Python. I hope the explanation I presented here helps you understand how to reshape arrays to perform broadcasting operations. My final advice is that you try to visualize what's going on whenever possible, and keep track of the shapes you're obtaining; doing that will make broadcasting much easier for you. Happy coding and thank you for reading!
 
