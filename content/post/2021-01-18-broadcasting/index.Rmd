@@ -13,8 +13,6 @@ highlight: kate
 
 ---
 
-
-
 ```{r, setup_r, include=FALSE}
 library(reticulate)
 library(knitr)
@@ -22,7 +20,6 @@ library(tidyverse)
 library(latex2exp)
 options("knitr.graphics.auto_pdf" = TRUE)
 knitr::opts_chunk$set(out.width="90%", fig.align='center')
-
 ```
 
 ```{python setup_python, echo=FALSE}
