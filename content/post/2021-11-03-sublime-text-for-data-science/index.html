@@ -1,0 +1,407 @@
+---
+title: Sublime Text for Data Science
+author: Carlos F. Alcalá
+date: '2021-11-03'
+slug: []
+categories: []
+tags: [sublime, python, r, julia, sql, matlab, data-science, latex]
+type: ''
+subtitle: ''
+image: ''
+output:
+  blogdown::html_page:
+    toc: true
+highlight: kate
+
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#sublime-text">Sublime Text</a>
+<ul>
+<li><a href="#installation-of-sendcode-and-terminus">Installation of SendCode and Terminus</a></li>
+<li><a href="#sendcode">SendCode</a></li>
+<li><a href="#terminus">Terminus</a></li>
+</ul></li>
+<li><a href="#shortcuts-and-sendcode-configurations">Shortcuts and SendCode Configurations</a>
+<ul>
+<li><a href="#python">Python</a></li>
+<li><a href="#r">R</a></li>
+<li><a href="#julia">Julia</a></li>
+<li><a href="#octave">Octave</a></li>
+<li><a href="#mysql">MySQL</a></li>
+</ul></li>
+<li><a href="#final-configuration">Final Configuration</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Data Scientists have to deal with multiple languages and tools in their every day life. We code in languages like Python, R, Julia, Matlab or Octave, among others; we also query databases with languages like SQL, and generate reports with tools like <span class="math inline">\(\LaTeX\)</span> or RMarkdown.</p>
+<p>Most of these languages come with an integrated development environment (IDE). For example, Matlab and Octave come with an editor, RStudio is the standard IDE for R; Python has multiple IDEs such as PyCharm, IDLE and Spyder; Julia has Juno; TexStudio and TexShop are excellent <span class="math inline">\(\LaTeX\)</span> editors; and Workbench is a development tool for MySQL.</p>
+<p>These applications are great to work with; however when you have to work with several of them it becomes a hassle to deal with multiple configurations, workflows and keyboard shortcuts. Because of that reason I have switched to working with one tool for all of them: Sublime Text.</p>
+<p>The purpose of this post is to show you how Sublime Text can be used as a one-stop shop tool for the coding needs of a Data Scientist.</p>
+</div>
+<div id="sublime-text" class="section level1">
+<h1>Sublime Text</h1>
+<p><a href="https://www.sublimetext.com/">Sublime Text</a> (ST) is a multi-purpose text editor with functionality that can be extended through packages. This feature is not unique to ST, there are other editors such as Vim, Emacs, Notepad++, VSCode, Atom, etc, that are also highly configurable; however I stuck to ST due to how fast and easy to use it is. Furthermore, the other editors I mentioned are free, as opposed to ST, but ST can still be used without paying for a license. In my case I bought the license due to how useful ST was for my projects.</p>
+<p>Out of the box ST doesn’t much, but it can be configured to be an excellent interactive development environment. Below is an animation with simple <code>"Hello world"</code> examples in Python, R and Julia executed side by side.</p>
+<div style="position:relative; padding-bottom:calc(69.61% + 44px)">
+<iframe src="https://gfycat.com/ifr/KnobbyWeightyHellbender" frameborder="0" scrolling="no" width="100%" height="100%" style="position:absolute;top:0;left:0;" allowfullscreen>
+</iframe>
+</div>
+<p>In the following sections I’ll show you how to set ST up for interactive execution of Python, R, Julia, Octave and MySQL. I won’t discuss how to install ST nor any of the aforementioned languages. I assume they’re already in your system. Furthermore, the tutorial is focused on a Mac operating system, but the same concepts apply to Windows; the only difference would be the use of <code>Ctrl</code> and <code>Alt</code> instead of <code>Cmd</code> and <code>Option</code> in keyboard shortcuts, and backslash instead of slash in file path names.</p>
+<div id="installation-of-sendcode-and-terminus" class="section level2">
+<h2>Installation of SendCode and Terminus</h2>
+<p>The packages that allow to open different terminals and sending code to them are <a href="https://packagecontrol.io/packages/Terminus">Terminus</a> and <a href="https://packagecontrol.io/packages/SendCode">SendCode</a>, both by <a href="https://github.com/randy3k">randy3k</a>, and can be installed with <a href="https://packagecontrol.io/">Package Control</a>.</p>
+<p>If you don’t have Package Control installed yet, you can do so by clicking on <code>Tools &gt; Install Package Control...</code>. Once installed, click on <code>Preferences &gt; Package Control</code> or press <code>Cmd+Shift+P</code>, and you’ll see a dropdown menu. Start writing <code>Install</code> and the dropdown menu will narrow down the options that contain that word; click on the option <code>Package Control: Install Package</code> and type the name of the package you want to install; in this case it is <code>SendCode</code>. Repeat the process to install <code>Terminus</code>.</p>
+<p>After their installation, we have to configure Terminus to open the terminals we want, and SendCode to send and execute code in a terminal.</p>
+</div>
+<div id="sendcode" class="section level2">
+<h2>SendCode</h2>
+<p>We specify we want SendCode to send lines of code to Terminus by opening the SendCode settings file at <code>Preferences &gt; Package Settings &gt; SendCode &gt; Settings</code> and writing</p>
+<pre class="json"><code>{
+    &quot;prog&quot;: &quot;terminus&quot;
+}</code></pre>
+</div>
+<div id="terminus" class="section level2">
+<h2>Terminus</h2>
+<p>The default Terminus settings are good enough to get us going, and I won’t go over them. They can later be configured to change the color of the terminals, cursor type, font type and size, etc. However, we do need to configure the shortcuts to open the different terminals in Terminus; we’ll do that in the following sections.</p>
+</div>
+</div>
+<div id="shortcuts-and-sendcode-configurations" class="section level1">
+<h1>Shortcuts and SendCode Configurations</h1>
+<div id="python" class="section level2">
+<h2>Python</h2>
+<p>I would like to open an IPython terminal with the shortcut <code>Cmd + Option + I</code> on the right column of my window. To do this I have to add a shortcut in the local settings file with the key bindings located at <code>Preferences &gt; Key Bindings</code>.</p>
+<p>To configure the shortcut we need to know the location of our IPython executable; if you don’t know it you can find it in Terminal with the command <code>which ipython</code>. Let’s assume we found the IPython’s executable location at <code>/path/to/ipythonfolder/ipython</code>. The configuration of our shortcut is then</p>
+<pre class="json"><code>// Open IPython at current file directory
+{
+    &quot;keys&quot;: [&quot;super+alt+i&quot;],
+    &quot;command&quot;: &quot;terminus_open&quot;,
+    &quot;args&quot;: {
+        &quot;cmd&quot;: &quot;/path/to/ipythonfolder/ipython&quot;,
+        &quot;cwd&quot;: &quot;${file_path:${folder}}&quot;,
+        &quot;pre_window_hooks&quot;: [
+         [&quot;set_layout&quot;, {
+            &quot;cols&quot;: [0.0, 0.5, 1.0],
+            &quot;rows&quot;: [0.0, 1.0],
+            &quot;cells&quot;: [[0, 0, 1, 1], [1, 0, 2, 1]]
+        }],
+        [&quot;focus_group&quot;, {&quot;group&quot;: 1}]
+      ] ,
+    &quot;title&quot;: &quot;iPython&quot;,
+    &quot;tag&quot;: &quot;python&quot;
+    }
+},</code></pre>
+<p>Now when we press <code>Cmd + Option + I</code> ST will open IPython in a tab in the second column. We now have to modify the SendCode settings to send Python code to the tab we opened. The modified SendCode settings now looks like</p>
+<pre class="json"><code>{
+    &quot;prog&quot;: &quot;terminus&quot;,
+    &quot;python&quot;:
+    {
+        &quot;bracketed_paste_mode&quot;: true,
+        &quot;tag&quot;: &quot;python&quot;
+    },
+}</code></pre>
+<p>Furthermore, if we want to send code to IPython with the <code>Shift + Enter</code> shortcut we need to add the following lines in the <code>Key Bindings</code> file:</p>
+<pre class="json"><code>// Send code to Terminus
+{
+    &quot;keys&quot;: [&quot;shift+enter&quot;], &quot;command&quot;: &quot;send_code&quot;,
+    &quot;context&quot;: [
+        { &quot;key&quot;: &quot;selector&quot;,
+            &quot;operator&quot;: &quot;equal&quot;,
+            &quot;operand&quot;: &quot;source.python&quot; }
+    ]
+},</code></pre>
+<p>The <code>"context"</code> option <code>"source.python"</code> limits our ability to send code with the assigned shortcut only to Python code. We will expand that ability to other languages by appending more options to this parameter.</p>
+<p>We can further expand the configuration to be able to build and run a file in the IPython terminal, no just specific lines of code. SendCode already comes with preconfigured Build Systems for IPython, Julia, R and Rcpp files. The build system for IPython is located at <code>Tools &gt; Build System &gt; IPython - Source File</code>. After choosing this build system, the Python file can be executed with the default shorcut <code>Cmd + B</code>.</p>
+<p>That’s it. We should now be able to run an IPython terminal and execute code in it.</p>
+</div>
+<div id="r" class="section level2">
+<h2>R</h2>
+<p>The setup for an R terminal in ST is very similary to that of IPython. However, instead of running the standard R terminal, we’ll use <a href="https://github.com/randy3k/radian">radian</a>. Radian is similar to an IPython terminal for R, but it’s not a substitute for an R installation, just an interface to it; therefore, we have to have R installed to be able to use radian.</p>
+<p>We install <code>radian</code> from IPython with the command <code>pip install -U radian</code>. Once installed, we locate the executable for radian and copy its path. Let’s assume we found radian at <code>/path/to/radianfolder/radian</code>. We can configure the shortcut <code>Cmd +   Option  +  R</code> to open a tab for radian in the second column with the following lines</p>
+<pre class="json"><code>// Open R at current file directory
+{
+    &quot;keys&quot;: [&quot;super+alt+r&quot;],
+    &quot;command&quot;: &quot;terminus_open&quot;,
+    &quot;args&quot;: {
+        &quot;cmd&quot;: &quot;/path/to/radianfolder/radian&quot;,
+        &quot;cwd&quot;: &quot;${file_path:${folder}}&quot;,
+        &quot;pre_window_hooks&quot;: [
+         [&quot;set_layout&quot;, {
+            &quot;cols&quot;: [0.0, 0.5, 1.0],
+            &quot;rows&quot;: [0.0, 1.0],
+            &quot;cells&quot;: [[0, 0, 1, 1], [1, 0, 2, 1]]
+        }],
+        [&quot;focus_group&quot;, {&quot;group&quot;: 1}]
+      ] ,
+    &quot;title&quot;: &quot;Rterm&quot;,
+    &quot;tag&quot;: &quot;r&quot;
+    }
+},</code></pre>
+<p>We then add the following lines to SendCode settings</p>
+<pre class="json"><code> &quot;r&quot;:
+    {
+        &quot;bracketed_paste_mode&quot;: true,
+        &quot;tag&quot;: &quot;r&quot;
+    },</code></pre>
+<p>and add R to the context selector of the SendCode shortcut for Terminus; the resulting shorcut settings are</p>
+<pre class="json"><code>// Send code to Terminus
+{
+    &quot;keys&quot;: [&quot;shift+enter&quot;], &quot;command&quot;: &quot;send_code&quot;,
+    &quot;context&quot;: [
+        { &quot;key&quot;: &quot;selector&quot;,
+            &quot;operator&quot;: &quot;equal&quot;,
+            &quot;operand&quot;: &quot;source.python,source.r&quot; }
+    ]
+},</code></pre>
+<p>These settings should allow us to open IPython and R terminals in tabs in the second column of ST and send code to them. The animation above shows how they work.</p>
+<p>For the rest of the languages I will only post the code for the shortcuts and SendCode settings. I will also assume their executables are installed in the path <code>/path/to/executablefolder/executable</code>, and will use the same <code>Shift+Enter</code> shortcut to send code to their respective terminals. I won’t post this shortcut configuration for each language, though; instead, I’ll show what the final <code>Shift+Enter</code> shortcut will look like at the end of the post.</p>
+</div>
+<div id="julia" class="section level2">
+<h2>Julia</h2>
+<p>Shortcut: <code>Cmd + Option + J</code><br />
+Configuration in Key Bindings file:</p>
+<pre class="json"><code>// Open Julia at current file directory
+ {
+    &quot;keys&quot;: [&quot;super+alt+j&quot;],
+    &quot;command&quot;: &quot;terminus_open&quot;,
+    &quot;args&quot;: {
+        &quot;cmd&quot;: &quot;/path/to/juliafolder/julia&quot;,
+        &quot;cwd&quot;: &quot;${file_path:${folder}}&quot;,
+        &quot;pre_window_hooks&quot;: [
+         [&quot;set_layout&quot;, {
+            &quot;cols&quot;: [0.0, 0.5, 1.0],
+            &quot;rows&quot;: [0.0, 1.0],
+            &quot;cells&quot;: [[0, 0, 1, 1], [1, 0, 2, 1]]
+        }],
+        [&quot;focus_group&quot;, {&quot;group&quot;: 1}]
+      ] ,
+    &quot;title&quot;: &quot;Julia&quot;,
+    &quot;tag&quot;: &quot;julia&quot;
+    }
+},</code></pre>
+<p>SendCode Settings:</p>
+<pre class="json"><code>&quot;julia&quot;:
+    {
+        &quot;tag&quot;: &quot;julia&quot;
+    },</code></pre>
+</div>
+<div id="octave" class="section level2">
+<h2>Octave</h2>
+<p>Shortcut: <code>Cmd + Option + M</code><br />
+Configuration in Key Bindings file:</p>
+<pre class="json"><code>// Open Octave at current file directory
+{
+    &quot;keys&quot;: [&quot;super+alt+o&quot;],
+    &quot;command&quot;: &quot;terminus_open&quot;,
+    &quot;args&quot;: {
+        &quot;cmd&quot;: &quot;/usr/local/bin/octave&quot;,
+        &quot;cwd&quot;: &quot;${file_path:${folder}}&quot;,
+        &quot;pre_window_hooks&quot;: [
+         [&quot;set_layout&quot;, {
+            &quot;cols&quot;: [0.0, 0.5, 1.0],
+            &quot;rows&quot;: [0.0, 1.0],
+            &quot;cells&quot;: [[0, 0, 1, 1], [1, 0, 2, 1]]
+        }],
+        [&quot;focus_group&quot;, {&quot;group&quot;: 1}]
+      ] ,
+    &quot;title&quot;: &quot;Octave&quot;,
+    &quot;tag&quot;: &quot;octave&quot;
+    }
+},</code></pre>
+<p>SendCode Settings:</p>
+<pre class="json"><code>&quot;matlab&quot;:
+{
+    &quot;bracketed_paste_mode&quot;: false,
+    &quot;tag&quot;: &quot;octave&quot;
+},</code></pre>
+<p>Here is an example plotting the sine function in Octave</p>
+<div style="position:relative; padding-bottom:calc(69.61% + 44px)">
+<iframe src="https://gfycat.com/ifr/UnlinedHardBrant" frameborder="0" scrolling="no" width="100%" height="100%" style="position:absolute;top:0;left:0;" allowfullscreen>
+</iframe>
+</div>
+</div>
+<div id="mysql" class="section level2">
+<h2>MySQL</h2>
+<p>Shortcut: <code>Cmd + Option + Y</code><br />
+Configuration in Key Bindings file:</p>
+<pre class="json"><code>// Open MySQL at current file directory
+{
+    &quot;keys&quot;: [&quot;super+alt+y&quot;],
+    &quot;command&quot;: &quot;terminus_open&quot;,
+    &quot;args&quot;: {
+        &quot;cmd&quot;: &quot;/path/to/mysqlfolder/mysql&quot;,
+        &quot;cwd&quot;: &quot;${file_path:${folder}}&quot;,
+        &quot;pre_window_hooks&quot;: [
+         [&quot;set_layout&quot;, {
+            &quot;cols&quot;: [0.0, 0.5, 1.0],
+            &quot;rows&quot;: [0.0, 1.0],
+            &quot;cells&quot;: [[0, 0, 1, 1], [1, 0, 2, 1]]
+        }],
+        [&quot;focus_group&quot;, {&quot;group&quot;: 1}]
+      ] ,
+    &quot;title&quot;: &quot;MySQL&quot;,
+    &quot;tag&quot;: &quot;sql&quot;
+    }
+},</code></pre>
+<p>SendCode Settings:</p>
+<pre class="json"><code>&quot;sql&quot;:
+    {
+    &quot;tag&quot;: &quot;sql&quot;
+},</code></pre>
+<p>Below is MySQL in action; I used <a href="https://dev.mysql.com/doc/mysql-getting-started/en/#mysql-getting-started-basic-ops">this example</a> from the documentation.</p>
+<div style="position:relative; padding-bottom:calc(69.61% + 44px)">
+<iframe src="https://gfycat.com/ifr/FortunateInferiorAntelope" frameborder="0" scrolling="no" width="100%" height="100%" style="position:absolute;top:0;left:0;" allowfullscreen>
+</iframe>
+</div>
+</div>
+</div>
+<div id="final-configuration" class="section level1">
+<h1>Final Configuration</h1>
+<p>Here is how the final the files for the SendCode settings and Key Bindings look like.</p>
+<p>SendCode Settings:</p>
+<pre class="json"><code>{
+    &quot;prog&quot;: &quot;terminus&quot;,
+    &quot;python&quot;:
+    {
+        &quot;bracketed_paste_mode&quot;: true,
+        &quot;tag&quot;: &quot;python&quot;
+    },
+    &quot;r&quot;:
+    {
+        &quot;bracketed_paste_mode&quot;: true,
+        &quot;tag&quot;: &quot;r&quot;
+    },
+    &quot;julia&quot;:
+    {
+        &quot;tag&quot;: &quot;julia&quot;
+    },
+    &quot;matlab&quot;:
+    {
+        &quot;bracketed_paste_mode&quot;: true,
+        &quot;tag&quot;: &quot;octave&quot;
+    },
+    &quot;sql&quot;:
+        {
+        &quot;tag&quot;: &quot;sql&quot;
+    }
+}</code></pre>
+<p><code>Key Bindings</code> file:</p>
+<pre class="json"><code>// Send code to Terminus
+{
+    &quot;keys&quot;: [&quot;shift+enter&quot;], &quot;command&quot;: &quot;send_code&quot;,
+    &quot;context&quot;: [
+        { &quot;key&quot;: &quot;selector&quot;,
+            &quot;operator&quot;: &quot;equal&quot;,
+            &quot;operand&quot;: &quot;source.python,source.r,source.julia,source.matlab,source.sql&quot; }
+    ]
+},
+// Open IPython at current file directory
+{
+    &quot;keys&quot;: [&quot;super+alt+i&quot;],
+    &quot;command&quot;: &quot;terminus_open&quot;,
+    &quot;args&quot;: {
+        &quot;cmd&quot;: &quot;/path/to/ipythonfolder/ipython&quot;,
+        &quot;cwd&quot;: &quot;${file_path:${folder}}&quot;,
+        &quot;pre_window_hooks&quot;: [
+         [&quot;set_layout&quot;, {
+            &quot;cols&quot;: [0.0, 0.5, 1.0],
+            &quot;rows&quot;: [0.0, 1.0],
+            &quot;cells&quot;: [[0, 0, 1, 1], [1, 0, 2, 1]]
+        }],
+        [&quot;focus_group&quot;, {&quot;group&quot;: 1}]
+      ] ,
+    &quot;title&quot;: &quot;iPython&quot;,
+    &quot;tag&quot;: &quot;python&quot;
+    }
+},
+// Open R at current file directory
+{
+    &quot;keys&quot;: [&quot;super+alt+r&quot;],
+    &quot;command&quot;: &quot;terminus_open&quot;,
+    &quot;args&quot;: {
+        &quot;cmd&quot;: &quot;/path/to/radianfolder/radian&quot;,
+        &quot;cwd&quot;: &quot;${file_path:${folder}}&quot;,
+        &quot;pre_window_hooks&quot;: [
+         [&quot;set_layout&quot;, {
+            &quot;cols&quot;: [0.0, 0.5, 1.0],
+            &quot;rows&quot;: [0.0, 1.0],
+            &quot;cells&quot;: [[0, 0, 1, 1], [1, 0, 2, 1]]
+        }],
+        [&quot;focus_group&quot;, {&quot;group&quot;: 1}]
+      ] ,
+    &quot;title&quot;: &quot;Rterm&quot;,
+    &quot;tag&quot;: &quot;r&quot;
+    }
+},
+// Open Julia at current file directory
+ {
+    &quot;keys&quot;: [&quot;super+alt+j&quot;],
+    &quot;command&quot;: &quot;terminus_open&quot;,
+    &quot;args&quot;: {
+        &quot;cmd&quot;: &quot;/path/to/juliafolder/julia&quot;,
+        &quot;cwd&quot;: &quot;${file_path:${folder}}&quot;,
+        &quot;pre_window_hooks&quot;: [
+         [&quot;set_layout&quot;, {
+            &quot;cols&quot;: [0.0, 0.5, 1.0],
+            &quot;rows&quot;: [0.0, 1.0],
+            &quot;cells&quot;: [[0, 0, 1, 1], [1, 0, 2, 1]]
+        }],
+        [&quot;focus_group&quot;, {&quot;group&quot;: 1}]
+      ] ,
+    &quot;title&quot;: &quot;Julia&quot;,
+    &quot;tag&quot;: &quot;julia&quot;
+    }
+},
+// Open Octave at current file directory
+{
+    &quot;keys&quot;: [&quot;super+alt+o&quot;],
+    &quot;command&quot;: &quot;terminus_open&quot;,
+    &quot;args&quot;: {
+        &quot;cmd&quot;: &quot;/usr/local/bin/octave&quot;,
+        &quot;cwd&quot;: &quot;${file_path:${folder}}&quot;,
+        &quot;pre_window_hooks&quot;: [
+         [&quot;set_layout&quot;, {
+            &quot;cols&quot;: [0.0, 0.5, 1.0],
+            &quot;rows&quot;: [0.0, 1.0],
+            &quot;cells&quot;: [[0, 0, 1, 1], [1, 0, 2, 1]]
+        }],
+        [&quot;focus_group&quot;, {&quot;group&quot;: 1}]
+      ] ,
+    &quot;title&quot;: &quot;Octave&quot;,
+    &quot;tag&quot;: &quot;octave&quot;
+    }
+},
+// Open MySQL at current file directory
+{
+    &quot;keys&quot;: [&quot;super+alt+y&quot;],
+    &quot;command&quot;: &quot;terminus_open&quot;,
+    &quot;args&quot;: {
+        &quot;cmd&quot;: &quot;/path/to/mysqlfolder/mysql&quot;,
+        &quot;cwd&quot;: &quot;${file_path:${folder}}&quot;,
+        &quot;pre_window_hooks&quot;: [
+         [&quot;set_layout&quot;, {
+            &quot;cols&quot;: [0.0, 0.5, 1.0],
+            &quot;rows&quot;: [0.0, 1.0],
+            &quot;cells&quot;: [[0, 0, 1, 1], [1, 0, 2, 1]]
+        }],
+        [&quot;focus_group&quot;, {&quot;group&quot;: 1}]
+      ] ,
+    &quot;title&quot;: &quot;MySQL&quot;,
+    &quot;tag&quot;: &quot;sql&quot;
+    }
+}</code></pre>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>Sublime Text is a fast and highly configurable text editor that can be used as an interactive developement tool for multiple programming and markup languages used in Data Science. In this post I showed how ST can be configured to run Python, R, Julia, Octave and SQL interactively.</p>
+<p>I didn’t cover the configuration of ST to work with <span class="math inline">\(\LaTeX\)</span> or RMarkdown because there are already really good tutorials out there like <a href="https://panjeh.medium.com/install-latex-on-mac-os-using-sublime-text-3-mactex-latextools-skim-adf5354e6f55">this one for LaTeX</a> and <a href="https://alberto-stefanelli.netlify.app/post/sublime_ride/">this one for RMarkdown</a>.</p>
+<p>Furthermore, ST is not a perfect replacement of specialized IDEs like RStudio or PyCharm; these provide features that ST doesn’t, e.g., interactive debugging. However, for fast development of small projects ST does a wonderful job.</p>
+<p>I hope this tutorial taught you something new about Sublime Text and about available options to code more efficiently.</p>
+</div>
