@@ -1,7 +1,7 @@
 ---
 title: Sublime Text for Data Science
 author: Carlos F. Alcalá
-date: '2021-11-03'
+date: '2021-11-08'
 slug: []
 categories: []
 tags: [sublime, python, r, julia, sql, matlab, data-science, latex]
@@ -19,7 +19,7 @@ highlight: kate
 
 Data Scientists have to deal with multiple languages and tools in their every day life. We code in languages like Python, R, Julia, Matlab or Octave, among others; we also query databases with languages like SQL, and generate reports with tools like $\LaTeX$ or RMarkdown.
 
-Most of these languages come with an integrated development environment (IDE). For example, Matlab and Octave come with an editor, RStudio is the standard IDE for R; Python has multiple IDEs such as PyCharm, IDLE and Spyder; Julia has Juno; TexStudio and TexShop are excellent $\LaTeX$ editors; and Workbench is a development tool for MySQL.
+Most of these languages come with an integrated development environment (IDE). For example, Matlab and Octave come with an editor, RStudio is the standard IDE for R and RMarkdown; Python has multiple IDEs such as PyCharm, IDLE and Spyder; Julia has Juno; TexStudio and TexShop are excellent $\LaTeX$ editors; and Workbench is a visual development tool available for MySQL.
 
 These applications are great to work with; however when you have to work with several of them it becomes a hassle to deal with multiple configurations, workflows and keyboard shortcuts. Because of that reason I have switched to working with one tool for all of them: Sublime Text.
 
@@ -27,21 +27,21 @@ The purpose of this post is to show you how Sublime Text can be used as a one-st
 
 # Sublime Text
 
-[Sublime Text](https://www.sublimetext.com/) (ST) is a multi-purpose text editor with functionality that can be extended through packages. This feature is not unique to ST, there are other editors such as Vim, Emacs, Notepad++, VSCode, Atom, etc, that are also highly configurable; however I stuck to ST due to how fast and easy to use it is. Furthermore, the other editors I mentioned are free, as opposed to ST, but ST can still be used without paying for a license. In my case I bought the license due to how useful ST was for my projects.
+[Sublime Text](https://www.sublimetext.com/) (ST) is a multi-purpose text editor with functionality that can be extended through packages. This feature is not unique to ST, there are editors such as Vim, Emacs, Notepad++, VSCode, Atom, etc, that are also highly configurable; however I stuck to ST due to how fast and easy to use it is. Furthermore, the other editors I mentioned are free, as opposed to ST; however, ST can still be used without paying for a license. In my case I bought the license due to how useful ST was for my projects.
 
-Out of the box ST doesn't much, but it can be configured to be an excellent interactive development environment. Below is an animation with simple `"Hello world"` examples in Python, R and Julia executed side by side.
+Out of the box ST doesn't do much, but with the proper configuration we can turn it into an excellent interactive development environment. As an example, below is a screen recording of simple `"Hello world"` snippets in Python, R and Julia executed side by side in ST.
 
 <div style='position:relative; padding-bottom:calc(69.61% + 44px)'><iframe src='https://gfycat.com/ifr/KnobbyWeightyHellbender' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0;' allowfullscreen></iframe></div>
 
-In the following sections I'll show you how to set ST up for interactive execution of Python, R, Julia, Octave and MySQL. I won't discuss how to install ST nor any of the aforementioned languages. I assume they're already in your system. Furthermore, the tutorial is focused on a Mac operating system, but the same concepts apply to Windows; the only difference would be the use of `Ctrl` and `Alt` instead of `Cmd` and `Option` in keyboard shortcuts, and backslash instead of slash in file path names.
+In the following sections I will show you how to set ST up for interactive execution of Python, R, Julia, Octave and MySQL. I will not discuss how to install ST nor any of the aforementioned languages; I assume they are already in your system. Furthermore, the tutorial is focused on a Mac operating system, but the same concepts apply to Windows; the only difference would be the use of `Ctrl` and `Alt` instead of `Cmd` and `Option` in keyboard shortcuts, and backslash instead of slash in file path names.
 
 ## Installation of SendCode and Terminus
 
 The packages that allow to open different terminals and sending code to them are [Terminus](https://packagecontrol.io/packages/Terminus) and [SendCode](https://packagecontrol.io/packages/SendCode), both by [randy3k](https://github.com/randy3k), and can be installed with [Package Control](https://packagecontrol.io/).
 
-If you don't have Package Control installed yet, you can do so by clicking on `Tools > Install Package Control...`. Once installed, click on `Preferences > Package Control` or press `Cmd+Shift+P`, and you'll see a dropdown menu. Start writing `Install` and the dropdown menu will narrow down the options that contain that word; click on the option `Package Control: Install Package` and type the name of the package you want to install; in this case it is `SendCode`. Repeat the process to install `Terminus`.
+If you do not have Package Control installed yet, you can do so by clicking on `Tools > Install Package Control...`. Once installed, click on `Preferences > Package Control` or press `Cmd+Shift+P`, and you will see a dropdown menu. Start writing `Install` and the dropdown menu will narrow down the options that contain that word; click on the option `Package Control: Install Package` and type the name of the package you want to install; in this case it is `SendCode`. Repeat the process to install `Terminus`.
 
-After their installation, we have to configure Terminus to open the terminals we want, and SendCode to send and execute code in a terminal.
+After their installation, we have to configure Terminus to open the terminals we want, and SendCode to send and execute code in the terminals.
 
 ## SendCode
 We specify we want SendCode to send lines of code to Terminus by opening the SendCode settings file at `Preferences > Package Settings > SendCode > Settings` and writing
@@ -53,15 +53,15 @@ We specify we want SendCode to send lines of code to Terminus by opening the Sen
 ```
 
 ## Terminus
-The default Terminus settings are good enough to get us going, and I won't go over them. They can later be configured to change the color of the terminals, cursor type, font type and size, etc. However, we do need to configure the shortcuts to open the different terminals in Terminus; we'll do that in the following sections.
+The default Terminus settings are good enough to get us going, and I will not go over them. They can later be configured to change the color of the terminals, cursor type, font type and size, etc. However, we do need to configure the shortcuts to open the different terminals in Terminus, and that is what we will do in the following sections.
 
 # Shortcuts and SendCode Configurations
 
 ## Python
 
-I would like to open an IPython terminal with the shortcut `Cmd + Option + I` on the right column of my window. To do this I have to add a shortcut in the local settings file with the key bindings located at `Preferences > Key Bindings`.
+When I code in Python I work with an IPython terminal instead of the regular console. I open IPython with the shortcut `Cmd + Option + I` on the right column of my working window. We will use the same configuration in this tutorial.
 
-To configure the shortcut we need to know the location of our IPython executable; if you don't know it you can find it in Terminal with the command `which ipython`. Let's assume we found the IPython's executable location at `/path/to/ipythonfolder/ipython`. The configuration of our shortcut is then
+In order to open IPython with `Cmd + Option + I` we have to configure the shortcut in the ST key bindings file located at `Preferences > Key Bindings`. We need to know the location of our IPython executable to configure the shortcut; if you do not know it you can find it in Mac's Terminal with the command `which ipython`. Let us assume we found the IPython executable at `/path/to/ipythonfolder/ipython`; the configuration of our shortcut is then
 ```json
 // Open IPython at current file directory
 {
@@ -95,7 +95,7 @@ Now when we press `Cmd + Option + I` ST will open IPython in a tab in the second
     },
 }
 ```
-Furthermore, if we want to send code to IPython with the `Shift + Enter` shortcut we need to add the following lines in the `Key Bindings` file:
+Furthermore, if we want to send code to IPython with `Shift + Enter` we need to add the following lines in the `Key Bindings` file:
 ```json
 // Send code to Terminus
 {
@@ -107,18 +107,21 @@ Furthermore, if we want to send code to IPython with the `Shift + Enter` shortcu
     ]
 },
 ```
-The `"context"` option `"source.python"` limits our ability to send code with the assigned shortcut only to Python code. We will expand that ability to other languages by appending more options to this parameter.
+The `"context"` option `"source.python"` limits our ability to send code with the assigned shortcut only to Python code. We will expand that ability to our other languages by appending more options to this parameter.
 
-We can further expand the configuration to be able to build and run a file in the IPython terminal, no just specific lines of code. SendCode already comes with preconfigured Build Systems for IPython, Julia, R and Rcpp files. The build system for IPython is located at `Tools > Build System > IPython - Source File`. After choosing this build system, the Python file can be executed with the default shorcut `Cmd + B`.
+We can further expand the configuration to be able to build and run a file in the IPython terminal, not specific lines of code only. SendCode already comes with preconfigured build systems for IPython, Julia, R and Rcpp files. The build system for IPython is located at `Tools > Build System > IPython - Source File`. After choosing this build system, the Python file can be executed with the default shorcut `Cmd + B`.
 
-That's it. We should now be able to run an IPython terminal and execute code in it.
+That is it. We should now be able to run an IPython terminal and execute code in it.
+
+Below is a screen recording of a linear regression example in Python. First the IPython terminal is opened with `Cmd + Option + B`, then some code selections are sent to the terminal with `Shift + Enter`, and finally the whole the file is executed in the terminal with `Cmd + B`.
+
+<div style='position:relative; padding-bottom:calc(69.61% + 44px)'><iframe src='https://gfycat.com/ifr/TepidEmbarrassedCranefly' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0;' allowfullscreen></iframe></div>
 
 
 ## R
-The setup for an R terminal in ST is very similary to that of IPython. However, instead of running the standard R terminal, we'll use [radian](https://github.com/randy3k/radian). Radian is similar to an IPython terminal for R, but it's not a substitute for an R installation, just an interface to it; therefore, we have to have R installed to be able to use radian.
+The setup of an R terminal in ST is very similar to that of IPython. Like we did with Python, we will not use the standard R terminal; instead we will use [radian](https://github.com/randy3k/radian). Radian is an interface to the standard R terminal, like what IPython is for Python; therefore, we have to have a proper R installation before we can continue.
 
-
-We install `radian` from IPython with the command `pip install -U radian`. Once installed, we locate the executable for radian and copy its path. Let's assume we found radian at `/path/to/radianfolder/radian`. We can configure the shortcut `Cmd +   Option  +  R` to open a tab for radian in the second column with the following lines
+Assuming we have R already installed, we install `radian` from IPython with the command `pip install -U radian`. Once installed, we locate the executable for radian and copy its path. In this case we assume we found radian at `/path/to/radianfolder/radian`. We can configure the shortcut `Cmd +   Option  +  R` to open a tab for radian in the second column with the following lines
 ```json
 // Open R at current file directory
 {
@@ -140,7 +143,7 @@ We install `radian` from IPython with the command `pip install -U radian`. Once 
     }
 },
 ```
-We then add the following lines to SendCode settings
+We then add the following lines to the SendCode settings
 ```json
  "r":
     {
@@ -160,9 +163,15 @@ and add R to the context selector of the SendCode shortcut for Terminus; the res
     ]
 },
 ```
-These settings should allow us to open IPython and R terminals in tabs in the second column of ST and send code to them. The animation above shows how they work.
+These settings should allow us to send code to open IPython and radian terminals.
 
-For the rest of the languages I will only post the code for the shortcuts and SendCode settings. I will also assume their executables are installed in the path `/path/to/executablefolder/executable`, and will use the same `Shift+Enter` shortcut to send code to their respective terminals. I won't post this shortcut configuration for each language, though; instead, I'll show what the final `Shift+Enter` shortcut will look like at the end of the post.
+We can also build R files within the radian terminal. The preconfigured build system that comes with SendCode can be found at `Tools > Build System > R - Source File`. Once selected, we can execute the whole file in the radian terminal with `Cmd + B`. Below is a screen recording of a linear regression example in R. Similar to what we did for IPython, we open the radian terminal with `Cmd + Option + R`, send some lines of code to the terminal with `Shift + Enter`, and execute the whole file with `Cmd + B`.
+
+<div style='position:relative; padding-bottom:calc(69.61% + 44px)'><iframe src='https://gfycat.com/ifr/ScentedWeightyCarpenterant' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0;' allowfullscreen></iframe></div>
+
+
+For the rest of the languages I will only post the code for the shortcuts and SendCode settings. I will also assume their executables are installed in the path `/path/to/executablefolder/executable`, and will use the same `Shift+Enter` shortcut to send code to their terminals. I will not post this shortcut configuration for each language, though; instead, I will show what the final `Shift+Enter` shortcut looks like at the end of the post.
+
 
 ## Julia
 
@@ -199,6 +208,9 @@ SendCode Settings:
     },
 ```
 
+A build system can be used to execute whole files in the Julia terminal; the one that ships with SendCode is located at `Tools > Build System > Julia - Source File`. Below is a Julia version of the linear regression example shown in the Python and R cases.
+
+<div style='position:relative; padding-bottom:calc(69.61% + 44px)'><iframe src='https://gfycat.com/ifr/BouncySomeIberianlynx' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0;' allowfullscreen></iframe></div>
 
 ## Octave
 Shortcut: `Cmd + Option + M`\
@@ -232,7 +244,7 @@ SendCode Settings:
     "tag": "octave"
 },
 ```
-Here is an example plotting the sine function in Octave
+Here is an example of a sine plot in Octave
 
 <div style='position:relative; padding-bottom:calc(69.61% + 44px)'><iframe src='https://gfycat.com/ifr/UnlinedHardBrant' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0;' allowfullscreen></iframe></div>
 
@@ -274,7 +286,7 @@ Below is MySQL in action; I used [this example](https://dev.mysql.com/doc/mysql-
 
 # Final Configuration
 
-Here is how the final the files for the SendCode settings and Key Bindings look like.
+Here is how the final files for the SendCode settings and Key Bindings look like.
 
 SendCode Settings:
 ```json
@@ -419,6 +431,6 @@ Sublime Text is a fast and highly configurable text editor that can be used as a
 
 I didn't cover the configuration of ST to work with $\LaTeX$ or RMarkdown because there are already really good tutorials out there like [this one for LaTeX](https://panjeh.medium.com/install-latex-on-mac-os-using-sublime-text-3-mactex-latextools-skim-adf5354e6f55) and [this one for RMarkdown](https://alberto-stefanelli.netlify.app/post/sublime_ride/).
 
-Furthermore, ST is not a perfect replacement of specialized IDEs like RStudio or PyCharm; these provide features that ST doesn't, e.g., interactive debugging. However, for fast development of small projects ST does a wonderful job.
+Furthermore, I need to provide the disclaimer that ST is not a perfect replacement of specialized IDEs like RStudio or PyCharm; these applications provide features that ST doesn't, e.g., visual debugging. However, for fast and interactive development of small projects ST does a wonderful job.
 
-I hope this tutorial taught you something new about Sublime Text and about available options to code more efficiently.
+I hope this post showed you something cool about Sublime Text, but more important, I hope you learned something new about the development tools available for your career in Data Science.
