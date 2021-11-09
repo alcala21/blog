@@ -37,7 +37,7 @@ In the following sections I will show you how to set ST up for interactive execu
 
 ## Installation of SendCode and Terminus
 
-The packages that allow to open different terminals and sending code to them are [Terminus](https://packagecontrol.io/packages/Terminus) and [SendCode](https://packagecontrol.io/packages/SendCode), both by [randy3k](https://github.com/randy3k), and can be installed with [Package Control](https://packagecontrol.io/).
+The packages that allow the opening of different terminals and sending code to them are [Terminus](https://packagecontrol.io/packages/Terminus) and [SendCode](https://packagecontrol.io/packages/SendCode), both by [randy3k](https://github.com/randy3k), and can be installed with [Package Control](https://packagecontrol.io/).
 
 If you do not have Package Control installed yet, you can do so by clicking on `Tools > Install Package Control...`. Once installed, click on `Preferences > Package Control` or press `Cmd+Shift+P`, and you will see a dropdown menu. Start writing `Install` and the dropdown menu will narrow down the options that contain that word; click on the option `Package Control: Install Package` and type the name of the package you want to install; in this case it is `SendCode`. Repeat the process to install `Terminus`.
 
@@ -213,7 +213,7 @@ A build system can be used to execute whole files in the Julia terminal; the one
 <div style='position:relative; padding-bottom:calc(69.61% + 44px)'><iframe src='https://gfycat.com/ifr/BouncySomeIberianlynx' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0;' allowfullscreen></iframe></div>
 
 ## Octave
-Shortcut: `Cmd + Option + M`\
+Shortcut: `Cmd + Option + O`\
 Configuration in Key Bindings file:
 ```json
 // Open Octave at current file directory
