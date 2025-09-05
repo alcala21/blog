@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enchúlame la Promo - Price Optimization</title>
+    <link rel="icon" type="image/png" href="icons8-money-50.png">
+    
+    <!-- React and ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Mantine CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mantine/core@7.5.3/styles.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1b1e;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        }
+        
+        #root {
+            min-height: 100vh;
+        }
+        
+        .mantine-paper {
+            background-color: #2c2e33 !important;
+            border: none !important;
+        }
+        
+        .mantine-button {
+            background-color: #373b41 !important;
+            color: white !important;
+            border: none !important;
+        }
+        
+        .mantine-button:hover {
+            background-color: #4a4d53 !important;
+        }
+        
+        .mantine-progress-root {
+            width: 100% !important;
+        }
+        
+        .mantine-slider-root {
+            width: 100% !important;
+        }
+        
+        .mantine-slider-track {
+            background-color: #373b41 !important;
+        }
+        
+        .mantine-slider-thumb {
+            background-color: #228be6 !important;
+        }
+        
+        .mantine-slider-bar {
+            background-color: #228be6 !important;
+        }
+        
+        /* Custom slider thumb styling */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 4px solid #228be6;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 2px solid #228be6;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        input[type="range"]::-ms-thumb {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 2px solid #228be6;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script>
+        const { createRoot } = ReactDOM;
+        const { createElement: h, useState } = React;
+
+        // Product data with actual parameters from params.csv
+        const products = [
+            { id: '80798', name: 'Adrenalode - Moras 1Lt', a: 2584548.9789521797, b: 49374.25468544842, c: 17.9, r: 34.9, current: 34.9, optimal: 34.9 },
+            { id: '90811', name: 'Adrenalode - Moras 500mL', a: 1432500.124709431, b: 49421.90815501595, c: 10.7, r: 21.1, current: 21.1, optimal: 21.1 },
+            { id: '125444', name: 'Brawndo - Fresa', a: 1633014.8169003497, b: 49059.25106946131, c: 14.4, r: 32.4, current: 32.4, optimal: 23.9 },
+            { id: '125456', name: 'Brawndo - Ponche', a: 3836199.599394424, b: 116526.57017034516, c: 14.4, r: 32.4, current: 32.4, optimal: 23.8 },
+            { id: '125443', name: 'Brawndo - Uva', a: 2146158.162997407, b: 64775.59985155732, c: 14.4, r: 32.4, current: 32.4, optimal: 23.8 },
+            { id: '125849', name: 'E-Blast - Fresa', a: 2264358.87842906, b: 86682.77169782098, c: 13.3, r: 26.0, current: 26.0, optimal: 19.80 },
+            { id: '125852', name: 'E-Blast - Moras', a: 2148918.92478427, b: 82159.39151483293, c: 13.3, r: 26.0, current: 26.0, optimal: 19.70 },
+            { id: '125850', name: 'E-Blast - Naranja', a: 1296569.8146669816, b: 49670.81571294194, c: 13.3, r: 26.0, current: 26.0, optimal: 26.0 },
+            { id: '87890', name: 'Fight Milk - Uva', a: 1879630.0705208057, b: 42856.01024254699, c: 16.0, r: 31.1, current: 31.1, optimal: 31.1 },
+            { id: '184020', name: 'Thunder Muscle - Moras', a: 1131872.390668318, b: 49061.059362184, c: 11.1, r: 21.7, current: 21.7, optimal: 21.7 }
+        ];
+
+        // Cross-elasticities matrix (simplified - only significant interactions)
+        const crossElasticities = {
+            '80798': { '90811': 0.068257, '87890': 0.020977 },
+            '90811': { '80798': 0.080297, '87890': 0.043069 },
+            '125444': { '125850': 0.010732 },
+            '87890': { '80798': 0.033546, '90811': 0.020977, '125850': 0.0632 }
+        };
+
+        // Constants
+        const MAX_PROFIT = 54722000.86;
+        const MAX_BUDGET = 25000000;
+        const MAX_PRODUCTS = 5;
+
+        function App() {
+            const [productPrices, setProductPrices] = useState(
+                products.reduce((acc, product) => {
+                    acc[product.id] = product.current;
+                    return acc;
+                }, {})
+            );
+
+            // Calculate cannibalized profits (replicating Python function)
+            function cannibalizedProfitsAt(x) {
+                const profits = {};
+                
+                products.forEach(product => {
+                    const demand = product.a - product.b * x[product.id];
+                    const priceDiff = x[product.id] - product.c;
+                    
+                    // Calculate cross-elasticity effect
+                    let crossEffect = 1;
+                    if (crossElasticities[product.id]) {
+                        Object.keys(crossElasticities[product.id]).forEach(otherId => {
+                            const otherProduct = products.find(p => p.id === otherId);
+                            if (otherProduct) {
+                                crossEffect += crossElasticities[product.id][otherId] * (x[product.id] / product.r - 1);
+                            }
+                        });
+                    }
+                    
+                    profits[product.id] = priceDiff * demand * crossEffect;
+                });
+                
+                return profits;
+            }
+
+            // Calculate cannibalized investments (replicating Python function)
+            function cannibalizedInvestmentsAt(x) {
+                const investments = {};
+                
+                products.forEach(product => {
+                    const demand = product.a - product.b * x[product.id];
+                    const priceDiff = product.r - x[product.id];
+                    
+                    // Calculate cross-elasticity effect
+                    let crossEffect = 1;
+                    if (crossElasticities[product.id]) {
+                        Object.keys(crossElasticities[product.id]).forEach(otherId => {
+                            const otherProduct = products.find(p => p.id === otherId);
+                            if (otherProduct) {
+                                crossEffect += crossElasticities[product.id][otherId] * (x[product.id] / product.r - 1);
+                            }
+                        });
+                    }
+                    
+                    investments[product.id] = priceDiff * demand * crossEffect;
+                });
+                
+                return investments;
+            }
+
+            // Calculate metrics
+            const profit = (() => {
+                const profits = cannibalizedProfitsAt(productPrices);
+                return Object.values(profits).reduce((sum, profit) => sum + profit, 0);
+            })();
+
+            const budget = (() => {
+                const investments = cannibalizedInvestmentsAt(productPrices);
+                return Object.values(investments).reduce((sum, investment) => sum + investment, 0);
+            })();
+
+            const productsInPromo = products.filter(product => productPrices[product.id] !== product.r).length;
+
+            const profitPercent = Math.min(100, (profit / MAX_PROFIT) * 100);
+            const budgetPercent = Math.min(100, (budget / MAX_BUDGET) * 100);
+            const productPercent = Math.min(100, (productsInPromo / MAX_PRODUCTS) * 100);
+
+            const profitColor = profit < 0.999999 * MAX_PROFIT ? '#228be6' : '#40c057';
+            const budgetColor = budget > MAX_BUDGET ? '#fa5252' : '#40c057';
+            const productColor = productsInPromo > MAX_PRODUCTS ? '#fa5252' : '#40c057';
+
+            function resetPrices() {
+                const newPrices = {};
+                products.forEach(product => {
+                    newPrices[product.id] = product.r;
+                });
+                setProductPrices(newPrices);
+            }
+
+            function optimizePrices() {
+                const newPrices = {};
+                products.forEach(product => {
+                    newPrices[product.id] = product.optimal;
+                });
+                setProductPrices(newPrices);
+            }
+
+            function updatePrice(productId, value) {
+                setProductPrices(prev => ({
+                    ...prev,
+                    [productId]: parseFloat(value)
+                }));
+            }
+
+            return h('div', { style: { minHeight: '100vh', backgroundColor: '#1a1b1e' } }, [
+                // Header
+                h('div', {
+                    style: {
+                        backgroundColor: '#2c2e33',
+                        padding: '1rem',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        zIndex: 1000
+                    }
+                }, [
+                    h('div', {
+                        style: {
+                            maxWidth: '1200px',
+                            margin: '0 auto',
+                            padding: '0 1rem'
+                        }
+                    }, [
+                        h('div', {
+                            style: {
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                marginBottom: '1rem'
+                            }
+                        }, [
+                            h('h1', { style: { color: 'white', margin: 0 } }, 'Enchúlame la Promo'),
+                            h('div', { style: { display: 'flex', gap: '0.5rem' } }, [
+                                h('button', {
+                                    onClick: resetPrices,
+                                    style: {
+                                        backgroundColor: '#373b41',
+                                        color: 'white',
+                                        border: 'none',
+                                        padding: '0.5rem 1rem',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer'
+                                    }
+                                }, 'RESET'),
+                                // h('button', {
+                                //     onClick: optimizePrices,
+                                //     style: {
+                                //         backgroundColor: '#373b41',
+                                //         color: 'white',
+                                //         border: 'none',
+                                //         padding: '0.5rem 1rem',
+                                //         borderRadius: '4px',
+                                //         cursor: 'pointer'
+                                //     }
+                                // }, 'SOLVE')
+                            ])
+                        ]),
+                        // Progress bars
+                        h('div', {
+                            style: {
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '0.2rem',
+                                width: '100%'
+                            }
+                        }, [
+                            // Profit
+                            h('div', { style: { width: '100%' } }, [
+                                h('div', {
+                                    style: {
+                                        width: '100%',
+                                        height: '37px',
+                                        backgroundColor: '#373b41',
+                                        borderRadius: '4px',
+                                        overflow: 'hidden',
+                                        position: 'relative'
+                                    }
+                                }, [
+                                    h('div', {
+                                        style: {
+                                            width: `${profitPercent}%`,
+                                            height: '100%',
+                                            backgroundColor: profitColor,
+                                            transition: 'width 0.3s ease',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            paddingLeft: '8px'
+                                        }
+                                    }, [
+                                        h('span', { 
+                                            style: { 
+                                                color: 'white', 
+                                                fontSize: '1.2rem',
+                                                fontWeight: '500'
+                                            } 
+                                        }, 'Ganancia')
+                                    ])
+                                ])
+                            ]),
+                            // Budget
+                            h('div', { style: { width: '100%' } }, [
+                                h('div', {
+                                    style: {
+                                        width: '100%',
+                                        height: '37px',
+                                        backgroundColor: '#373b41',
+                                        borderRadius: '4px',
+                                        overflow: 'hidden',
+                                        position: 'relative'
+                                    }
+                                }, [
+                                    h('div', {
+                                        style: {
+                                            width: `${budgetPercent}%`,
+                                            height: '100%',
+                                            backgroundColor: budgetColor,
+                                            transition: 'width 0.3s ease',
+                                            display: 'flex',
+                                            alignItems: 'left',
+                                            paddingLeft: '8px'
+                                        }
+                                    }, [
+                                        h('span', { 
+                                            style: { 
+                                                color: 'white', 
+                                                fontSize: '1.2rem',
+                                                fontWeight: '500'
+                                            } 
+                                        }, 'Gasto Promocional')
+                                    ])
+                                ])
+                            ]),
+                            // Products
+                            h('div', { style: { width: '100%' } }, [
+                                h('div', {
+                                    style: {
+                                        width: '100%',
+                                        height: '37px',
+                                        backgroundColor: '#373b41',
+                                        borderRadius: '4px',
+                                        overflow: 'hidden',
+                                        position: 'relative'
+                                    }
+                                }, [
+                                    h('div', {
+                                        style: {
+                                            width: `${productPercent}%`,
+                                            height: '100%',
+                                            backgroundColor: productColor,
+                                            transition: 'width 0.3s ease',
+                                            // display: 'flex',
+                                            alignItems: 'left',
+                                            paddingLeft: '8px'
+                                        }
+                                    }, [
+                                        h('span', { 
+                                            style: { 
+                                                color: 'white', 
+                                                fontSize: '1.2rem',
+                                                fontWeight: '500'
+                                            } 
+                                        }, 'Productos en Promo')
+                                    ])
+                                ])
+                            ])
+                        ])
+                    ])
+                ]),
+                // Main content
+                h('div', {
+                    style: {
+                        maxWidth: '1200px',
+                        margin: '0 auto',
+                        padding: '1rem',
+                        marginTop: '205px'
+                    }
+                }, [
+                    h('div', {
+                        style: {
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '0.5rem'
+                        }
+                    }, products.map(product => 
+                        h('div', {
+                            key: product.id,
+                            style: {
+                                backgroundColor: '#2c2e33',
+                                padding: '1rem',
+                                borderRadius: '4px'
+                            }
+                        }, [
+                            h('div', { style: { fontSize: '1.2rem', fontWeight: '500', marginBottom: '0.5rem' } }, product.name),
+                            h('div', { style: { display: 'flex', alignItems: 'center', gap: '1rem' } }, [
+                                h('input', {
+                                    type: 'range',
+                                    min: product.c,
+                                    max: product.r,
+                                    step: 0.1,
+                                    value: productPrices[product.id],
+                                    onChange: (e) => updatePrice(product.id, e.target.value),
+                                    style: {
+                                        flex: 1,
+                                        height: '6px',
+                                        backgroundColor: '#373b41',
+                                        borderRadius: '3px',
+                                        outline: 'none',
+                                        WebkitAppearance: 'none'
+                                    }
+                                }),
+                                h('span', { style: { fontSize: '0.9rem', minWidth: '50px', textAlign: 'right' } }, productPrices[product.id])
+                            ])
+                        ])
+                    ))
+                ])
+            ]);
+        }
+
+        // Render the app
+        const root = createRoot(document.getElementById('root'));
+        root.render(h(App));
+    </script>
+</body>
+</html>
