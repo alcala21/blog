@@ -101,16 +101,16 @@
 
         // Product data with actual parameters from params.csv
         const products = [
-            { id: '80798', name: 'Adrenalode - Moras 1Lt', a: 2584548.9789521797, b: 49374.25468544842, c: 17.9, r: 34.9, current: 34.9, optimal: 34.9 },
-            { id: '90811', name: 'Adrenalode - Moras 500mL', a: 1432500.124709431, b: 49421.90815501595, c: 10.7, r: 21.1, current: 21.1, optimal: 21.1 },
-            { id: '125444', name: 'Brawndo - Fresa', a: 1633014.8169003497, b: 49059.25106946131, c: 14.4, r: 32.4, current: 32.4, optimal: 23.9 },
-            { id: '125456', name: 'Brawndo - Ponche', a: 3836199.599394424, b: 116526.57017034516, c: 14.4, r: 32.4, current: 32.4, optimal: 23.8 },
-            { id: '125443', name: 'Brawndo - Uva', a: 2146158.162997407, b: 64775.59985155732, c: 14.4, r: 32.4, current: 32.4, optimal: 23.8 },
-            { id: '125849', name: 'E-Blast - Fresa', a: 2264358.87842906, b: 86682.77169782098, c: 13.3, r: 26.0, current: 26.0, optimal: 19.80 },
-            { id: '125852', name: 'E-Blast - Moras', a: 2148918.92478427, b: 82159.39151483293, c: 13.3, r: 26.0, current: 26.0, optimal: 19.70 },
-            { id: '125850', name: 'E-Blast - Naranja', a: 1296569.8146669816, b: 49670.81571294194, c: 13.3, r: 26.0, current: 26.0, optimal: 26.0 },
-            { id: '87890', name: 'Fight Milk - Uva', a: 1879630.0705208057, b: 42856.01024254699, c: 16.0, r: 31.1, current: 31.1, optimal: 31.1 },
-            { id: '184020', name: 'Thunder Muscle - Moras', a: 1131872.390668318, b: 49061.059362184, c: 11.1, r: 21.7, current: 21.7, optimal: 21.7 }
+            { id: '80798', name: 'Adrenalode - Moras 1Lt', a: 2584548.9789521797, b: 49374.25468544842, c: 18, r: 35, current: 35, optimal: 35 },
+            { id: '90811', name: 'Adrenalode - Moras 500mL', a: 1432500.124709431, b: 49421.90815501595, c: 10.5, r: 21, current: 21, optimal: 21 },
+            { id: '125444', name: 'Brawndo - Fresa', a: 1633014.8169003497, b: 49059.25106946131, c: 14.5, r: 32.5, current: 32.5, optimal: 28 },
+            { id: '125456', name: 'Brawndo - Ponche', a: 3836199.599394424, b: 116526.57017034516, c: 14.5, r: 32.5, current: 32.5, optimal: 28 },
+            { id: '125443', name: 'Brawndo - Uva', a: 2146158.162997407, b: 64775.59985155732, c: 14.5, r: 32.5, current: 32.5, optimal: 28 },
+            { id: '125849', name: 'E-Blast - Fresa', a: 2264358.87842906, b: 86682.77169782098, c: 13.5, r: 26.0, current: 26.0, optimal: 24.5 },
+            { id: '125852', name: 'E-Blast - Moras', a: 2148918.92478427, b: 82159.39151483293, c: 13.5, r: 26.0, current: 26.0, optimal: 24.5 },
+            { id: '125850', name: 'E-Blast - Naranja', a: 1296569.8146669816, b: 49670.81571294194, c: 13.5, r: 26.0, current: 26.0, optimal: 26.0 },
+            { id: '87890', name: 'Fight Milk - Uva', a: 1879630.0705208057, b: 42856.01024254699, c: 16.0, r: 31.0, current: 31.0, optimal: 31.0 },
+            { id: '184020', name: 'Thunder Muscle - Moras', a: 1131872.390668318, b: 49061.059362184, c: 11, r: 21.5, current: 21.5, optimal: 21.5 }
         ];
 
         // Cross-elasticities matrix (simplified - only significant interactions)
@@ -122,8 +122,8 @@
         };
 
         // Constants
-        const MAX_PROFIT = 54722000.86;
-        const MAX_BUDGET = 25000000;
+        const MAX_PROFIT = 47571679;
+        const MAX_BUDGET = 5790000;
         const MAX_PRODUCTS = 5;
 
         function App() {
@@ -424,7 +424,7 @@
                                     type: 'range',
                                     min: product.c,
                                     max: product.r,
-                                    step: 0.1,
+                                    step: 0.5,
                                     value: productPrices[product.id],
                                     onChange: (e) => updatePrice(product.id, e.target.value),
                                     style: {
